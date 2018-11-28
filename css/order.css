@@ -1,0 +1,64 @@
+.nav-item.active a {
+    background: none !important;
+}
+
+.nav-item.active {
+    border-bottom: 2px solid #4285f4;
+}
+
+.card-header {
+    cursor: pointer;
+}
+
+h5 span {
+    letter-spacing: 3px;
+}
+
+.btn-add {
+	height: 24px !important;
+	line-height: 10px !important;
+	margin-top: 0 !important;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+.btn-add:hover {
+	background: #4285f4 !important;
+	color: white !important;
+}
+
+.fullscreen {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100vh;
+	background: rgb(0, 0, 0, .5);
+}
+
+.loader-bg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.loader {
+    border: 16px solid transparent;
+    border-top: 16px solid #4285f4;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+    	transform: rotate(0deg);
+    }
+
+    100% {
+    	transform: rotate(360deg);
+    }
+}

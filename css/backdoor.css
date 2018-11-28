@@ -1,0 +1,15 @@
+.logindiv {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.btn-login:hover {
+	background: #4285f4 !important;
+	color: white !important;
+}
+
+.card-header, .list-group-item {
+    cursor: pointer;
+}
