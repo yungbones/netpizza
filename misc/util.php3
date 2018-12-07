@@ -1,5 +1,5 @@
 <?php 
-	function phone_number_format($number) {
+	function formatPhoneNumber($number) {
 		$number = preg_replace("/[^\d]/", "", $number);
 
 		if (strlen($number) == 11)
@@ -8,7 +8,7 @@
 		return $number;
 	}
 
-	function data_filter($data) {
+	function dataFilter($data) {
 		$data = trim($data);
 		$data = htmlentities($data);
 		$data = strip_tags($data);
@@ -19,5 +19,9 @@
 			$data = stripcslashes($data);
 
 		return $data;
+	}
+
+	function getShopStatus() {
+		return (date("H") >= 10 && date("H") < 22);
 	}
 ?>

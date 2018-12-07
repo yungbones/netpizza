@@ -1,4 +1,6 @@
 <?php
+	session_start();
+
     require_once "connection.php3";
     require_once "password.php3";
 
@@ -15,8 +17,12 @@
             if ($result = $mysqli->query("SELECT * FROM accounts WHERE phone='" . $phonenumber . "'")) {
             	while ($rows = $result->fetch_assoc()) {
             		if (verifyPassword($rows["password"], $password)) {
-                        $rows["password"] = ""; //dont save password to cookie (client side)
-						setcookie("json_userdata", json_encode(array("id" => $rows["id"], "user" => $rows["name"], "datas" => $rows)), time() + 3600, "/");
+                        //$rows["password"] = ""; //dont save password to cookie (client side)
+						//setcookie("json_userdata", json_encode(array("id" => $rows["id"], "user" => $rows["name"], "datas" => $rows)), time() + 3600, "/");
+
+						$_SESSION["userdatas"] = array("id" => $rows["id"], "user" => $rows["name"], "datas" => $rows);
+
+                        $mysqli->query("UPDATE accounts SET lastlogin=NOW() WHERE id=" . $rows["id"]);
 
             			echo "logged";
             		}

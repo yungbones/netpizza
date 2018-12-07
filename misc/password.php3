@@ -4,8 +4,8 @@
 	}
 
 	function createPassword($password) {
-		$hash = generateRandomString();
-		return "$" . $hash . "$" . hash("sha512", "sorosgyorgy" . hash("md5", $hash) . hash("md5", $password));
+		$salt = generateRandomString();
+		return "$" . $salt . "$" . hash("sha512", "sorosgyorgy" . hash("md5", $salt) . hash("md5", $password));
 	}
 
 	function verifyPassword($database, $password) {

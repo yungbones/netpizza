@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$(".btn").click(function() {
 		if ($(this).hasClass("start-btn")) {
 			var btn = $(this);
-			var sended = $.parseJSON('{"id": ' + btn.data("holder") + ', "newvalue": 1}');
+			var sended = $.parseJSON('{"func": "update", "id": ' + btn.data("holder") + ', "newvalue": 1}');
 
 	        $.ajax({
 	            type: "POST",
@@ -14,7 +14,7 @@ $(document).ready(function() {
 	            success: function(data) {
 	                if (data == "failed")
 	                	$.notify("Hiba", "error");
-	                else if (data == "updated")
+					else if (data == "updated")
 	                	btn.html("<i class='fas fa-hourglass-end'></i> Futár megérkezett").removeClass("btn-success").addClass("btn-warning").removeClass("start-btn").addClass("finish-btn").addClass("btn-sm");
 		        }
 	      	});
@@ -23,7 +23,7 @@ $(document).ready(function() {
 		}
 		else if ($(this).hasClass("finish-btn")) {
 			var btn = $(this);
-			var sended = $.parseJSON('{"id": ' + btn.data("holder") + ', "newvalue": 2}');
+			var sended = $.parseJSON('{"func": "update", "id": ' + btn.data("holder") + ', "newvalue": 2}');
 
 	        $.ajax({
 	            type: "POST",
@@ -44,7 +44,7 @@ $(document).ready(function() {
 		}
 		else if ($(this).hasClass("delete-btn")) {
 			var btn = $(this);
-			var sended = $.parseJSON('{"id": ' + btn.data("holder") + ', "newvalue": 3}');
+			var sended = $.parseJSON('{"func": "update", "id": ' + btn.data("holder") + ', "newvalue": 3}');
 
 			$.ajax({
 				type: "POST",
@@ -92,10 +92,10 @@ $(document).ready(function() {
 
 			return false;
 		}
-		else if ($(this).data("holder" == "")) {
+		else if ($(this).data("holder") == "asd") {
 			
 		}
-	})
+	});
 
 	$(".btn-login").click(function() {
 		$.ajax({
@@ -119,11 +119,46 @@ $(document).ready(function() {
 		});
 
 		return false;
-	})
+	});
 
-	/* setInterval(loadOrders, 1000);
+	$(".btn-addpayment").click(function() {
+		var value = $("#value").val();
+		var desc = $("#desc").val();
+
+		if (value < 0 || isNaN(value) || !$.isNumeric(value) || value.charAt(0) == '0' || desc.length < 10)
+			$.notify("Nem megfelelő bemeneti adatok", "error");
+		else {
+			$("#modalPayment").modal("hide");
+			var sended = $.parseJSON('{"func": "insert_p", "value": ' + Math.floor(value) + ', "desc": "' + desc + '"}');
+
+			$.ajax({
+				type: "POST",
+				url: "misc/backdoor-update.php",
+				data: sended,
+
+				success: function(data) {
+					if (data == "success")
+						$.notify("Sikeres feljegyzés", "success");
+					else if (data == "error")
+						$.notify("Sikertelen feljegyzés", "error");
+				}
+			});
+
+			return false;
+		}
+	});
+
+	/* loadOrders();
+	setInterval(loadOrders, 1000);
 
 	function loadOrders() {
 		$("#accordion").load("../misc/backdoor-load.php");
+
+		//console.log($(".counter").html().trim() + " - " + $(".card").length);
+
+		if ($(".counter").html().trim() < $(".card").length) {
+			$(".counter").html($(".card").length);
+			$.notify("Új rendelés érkezett", "warning");
+		}
 	} */
 });

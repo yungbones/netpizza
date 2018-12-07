@@ -3,10 +3,10 @@
     require_once "password.php3";
 
     if ($_POST) {
-        $name = $_POST["name"];
-        $phonenumber = $_POST["phone"];
-        $password  = createPassword($_POST["password"]);
-        $address = $_POST["address"];
+        $name = $_POST["reg-name"];
+        $phonenumber = $_POST["reg-phone"];
+        $password  = createPassword($_POST["reg-password"]);
+        $address = $_POST["reg-address"];
 
         try {
             if ($mysqli->query("SELECT phone FROM accounts WHERE phone='" . $phonenumber . "'")->num_rows == 0)

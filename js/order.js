@@ -13,6 +13,9 @@ $(document).ready(function() {
 	var colors = ["bg-warning", "bg-danger"];
 
 	$(".btn-add").click(function() {
+		$(".completeorder").removeClass("disabled");
+		$(".clearorders").removeClass("disabled");
+
 		self = [];
 		self["name"] = $(this).data("holder");
 		self["type"] = $(this).data("type");
@@ -48,6 +51,9 @@ $(document).ready(function() {
 	});
 
 	$(".clearorders").click(function() {
+		$(".completeorder").addClass("disabled");
+		$(this).addClass("disabled");
+
 		myOrder = [];
 		totalPrice = 0;
 
@@ -66,12 +72,12 @@ $(document).ready(function() {
 			for (var i = 0; i < myOrder.length; i++)
 				sended[i] = $.parseJSON('{"name": "' + myOrder[i]["name"] + '", "type": ' + myOrder[i]["type"] + ', "price": ' + myOrder[i]["price"] + ', "count": ' + myOrder[i]["count"] + '}');
 
-			var id = $.parseJSON(getCookie("json_userdata"))["id"];
+			var id = 12; //session user id
 			
 			$.ajax({
 	            type: "POST",
 	            url: "misc/order.php",
-	            data: {user: id, order: sended},
+	            data: {sended},
 
 	            success: function(data) {
 	                if (data == "success") {
@@ -98,23 +104,11 @@ $(document).ready(function() {
 	        return false;
 	    }
 	});
+
+	$(".card-header").click(function() {
+		footerFix();
+	})
 });
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = decodeURIComponent(document.cookie).split(';');
-    
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ')
-            c = c.substring(1);
-
-        if (c.indexOf(name) == 0)
-            return c.substring(name.length, c.length);
-    }
-
-    return "";
-}
 
 const numberFormat = (x) => {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

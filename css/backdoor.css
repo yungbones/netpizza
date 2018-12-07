@@ -13,3 +13,7 @@
 .card-header, .list-group-item {
     cursor: pointer;
 }
+
+.card-header h5 {
+	font-size: 1.1rem !important;
+}

@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="hu-HU">
 	<head>
@@ -55,8 +57,8 @@
 			require "misc/connection.php3";
 			require "misc/util.php3";
 
-			if (isset($_COOKIE["json_userdata"]))
-				$datas = json_decode($_COOKIE["json_userdata"], true);
+			if (isset($_SESSION["userdatas"]))
+				$datas = $_SESSION["userdatas"];
 			else
 				header("Location: profile.php");
 		?>
@@ -141,7 +143,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-4">
+				<div class="col-md-4 order-first order-md-2 mb-4">
 					<h3>Kosár</h3>
 
 					<ul class="pl-0 pb-3 mb-3 border-bottom border-secondary" id="orders" style="list-style: none;">
@@ -150,24 +152,11 @@
 
 					<p id="total">Összesen: <b>0 Forint</b></p>
 
-					<button class="btn btn-sm btn-block btn-outline-primary mb-2 clearorders"><i class="fas fa-trash-alt"></i> Kosár ürítése</button>
+					<button class="btn btn-sm btn-block btn-outline-primary mb-2 clearorders disabled"><i class="fas fa-trash-alt"></i> Kosár ürítése</button>
 
-					<button class="btn btn-sm btn-block btn-primary completeorder">Rendelés elküldése <i class="fas fa-angle-double-right"></i></button>
+					<button class="btn btn-sm btn-block btn-primary completeorder disabled">Rendelés elküldése <i class="fas fa-angle-double-right"></i></button>
 				</div>
 			</div>
-
-			<!-- <div class="col-md-3">
-				<h3 class="pt-0 mt-2 mb-3">Kosár</h3>
-
-				<ul class="pl-0 pb-3 mb-3 border-bottom border-secondary" id="orders" style="list-style: none;">
-					<li>Kosár tartalma jelenleg üres</li>
-				</ul>
-
-				<p id="total">Összesen: <b>0 Forint</b></p>
-
-				<button class="btn btn-danger btn-block clearorders"><i class="fas fa-trash-alt"></i> Kosár ürítése</button>
-				<button class="btn btn-success btn-block completeorder">Rendelés elküldése <i class="fas fa-angle-double-right"></i></button>
-			</div> -->
 		</div>
 
 		<!-- Footer -->
@@ -194,6 +183,8 @@
 				<!-- <h4 class="text-center">Feldolgozás folyamatban</h4> -->
 			</div>
 		</div>
+
+		<?php $mysqli->close(); ?>
 
 		<!-- Script Section -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

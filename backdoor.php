@@ -116,7 +116,7 @@
 					<div class="col-xl-4 mr-0 mb-4">
 						<ul class="list-group">
 							<li data-holder="orders" class="bg-light list-group-item d-flex justify-content-between align-items-center">Mai rendelések
-								<span class="badge badge-pill bg-primary">
+								<span class="badge badge-pill bg-primary counter">
 									<?php 
 										if ($result = $mysqli->query("SELECT COUNT(*) as counted FROM orders WHERE date=" . date("Ymd")))
 											echo $result->fetch_assoc()["counted"];
@@ -124,7 +124,7 @@
 								</span>
 							</li>
 
-							<li data-holder="addnote" class="bg-light list-group-item d-flex justify-content-between align-items-center">
+							<li data-toggle="modal" data-target="#modalPayment" class="bg-light list-group-item d-flex justify-content-between align-items-center">
 								Kiadás feljegyzése <i class="fas fa-money-bill-wave"></i>
 							</li>
 
@@ -140,33 +140,33 @@
 
 					<div class="col-xl-8 ml-0" id="orders">
 						<div id="accordion" class="mb-5">
-							<div class="card bg-light">
-								<?php 
-									if ($result = $mysqli->query("SELECT orders.id as oid, orders.orderdatas as oorderdatas, orders.price as oprice, orders.userid as ouid, orders.status as ostatus, orders.time as otime, accounts.name as aname, accounts.phone as aphone, accounts.address as aadress FROM orders LEFT JOIN accounts ON accounts.id=orders.userid WHERE date=" . date("Ymd") . " ORDER BY orders.id DESC")) {
-										$texts = array("30 cm", "50 cm");
-										$colors = array("bg-warning", "bg-danger");
+							<?php
+								if ($result = $mysqli->query("SELECT orders.id as oid, orders.orderdatas as oorderdatas, orders.price as oprice, orders.userid as ouid, orders.status as ostatus, orders.time as otime, accounts.name as aname, accounts.phone as aphone, accounts.address as aadress FROM orders LEFT JOIN accounts ON accounts.id=orders.userid WHERE date=" . date("Ymd") . " ORDER BY orders.id DESC")) {
+									$texts = array("30 cm", "50 cm");
+									$colors = array("bg-warning", "bg-danger");
 
-										while ($rows = $result->fetch_assoc()) {
-											$text = "";
-											foreach (json_decode($rows["oorderdatas"]) as $value)
-												$text = $text . "<p class='mt-2 mb-1'><span class='badge badge-pill " . $colors[$value[1] - 1] . "'>" . $texts[$value[1] - 1] . "</span>" . ($value[3] > 1 ? ' (' . $value[3] . 'x)' : '') . " <b>" . $value[0] . "</b> - " . number_format($value[2]) . " Forint</p>";
+									while ($rows = $result->fetch_assoc()) {
+										$text = "";
+										foreach (json_decode($rows["oorderdatas"]) as $value)
+											$text = $text . "<p class='mt-2 mb-1'><span class='badge badge-pill " . $colors[$value[1] - 1] . "'>" . $texts[$value[1] - 1] . "</span>" . ($value[3] > 1 ? ' (' . $value[3] . 'x)' : '') . " <b>" . $value[0] . "</b> - " . number_format($value[2]) . " Forint</p>";
 
-											$text = $text . "<p class='mt-4'><i class='fas fa-phone-square'></i> Telefonszám: <b>" . phone_number_format($rows["aphone"]) . "</b></p><p class='mb-1'><i class='fas fa-money-bill-alt'></i> Összesen: <b>" . number_format($rows["oprice"]) . " Forint</b></p>";
+										$text = $text . "<p class='mt-4'><i class='fas fa-phone-square'></i> Telefonszám: <b>" . formatPhoneNumber($rows["aphone"]) . "</b></p><p class='mb-1'><i class='fas fa-money-bill-alt'></i> Összesen: <b>" . number_format($rows["oprice"]) . " Forint</b></p>";
 
-											if ($rows["ostatus"] == 0)
-												$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-success start-btn'><i class='fas fa-truck'></i> Futár elindult</button>";
-											else if ($rows["ostatus"] == 1)
-												$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-warning finish-btn'><i class='fas fa-hourglass-end'></i> Futár megérkezett</button>";
-											else if ($rows["ostatus"] == 2)
-												$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-dark' disabled><i class='fas fa-check-circle'></i> Rendelés teljesítve</button>";
-											else if ($rows["ostatus"] == 3)
-												$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-dark' disabled><i class='fas fa-exclamation-circle'></i> Rendelés törölve</button>";
+										if ($rows["ostatus"] == 0)
+											$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-success start-btn'><i class='fas fa-truck'></i> Futár elindult</button>";
+										else if ($rows["ostatus"] == 1)
+											$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-warning finish-btn'><i class='fas fa-hourglass-end'></i> Futár megérkezett</button>";
+										else if ($rows["ostatus"] == 2)
+											$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-dark' disabled><i class='fas fa-check-circle'></i> Rendelés teljesítve</button>";
+										else if ($rows["ostatus"] == 3)
+											$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-dark' disabled><i class='fas fa-exclamation-circle'></i> Rendelés törölve</button>";
 
-											// if order not completed add delete button
-											if ($rows["ostatus"] < 2)
-												$button = $button . '<br id="br-' . $rows["oid"] . '"><button id="remove-' . $rows["oid"] . '" data-holder="' . $rows["oid"] . '" class="btn btn-sm btn-danger delete-btn mt-2"><i class="fas fa-times"></i> Sztornó</button>';
+										//if order not completed add delete button
+										if ($rows["ostatus"] < 2)
+											$button = $button . '<br id="br-' . $rows["oid"] . '"><button id="remove-' . $rows["oid"] . '" data-holder="' . $rows["oid"] . '" class="btn btn-sm btn-danger delete-btn mt-2"><i class="fas fa-times"></i> Sztornó</button>';
 
-											echo '<div class="card-header" data-toggle="collapse" data-target="#collapse-' . $rows["oid"] . '">
+										echo '<div class="card bg-light mb-3">
+											<div class="card-header" data-toggle="collapse" data-target="#collapse-' . $rows["oid"] . '">
 												<h5 class="mb-0"><b>#' . $rows["oid"] . '</b> - Rögzített rendelés <b>' . $rows["aname"] . '</b> névre <b>(' . $rows["aadress"] . ')</b></h5>
 
 												<a class="font-small"><i class="fa fa-clock"></i> ' . $rows["otime"] . '</a>
@@ -180,33 +180,48 @@
 														<div class="col-md-6">' . $button . '</div>
 													</div>
 												</div>
-											</div>';
-										}
+											</div>
+										</div>';
 									}
-								?>
-							</div>
+								}
+							?>
 						</div>
 					</div>
 				</div>
 			</div>
+		<?php } ?>
 
-			<!-- Footer -->
-			<!-- <footer class="page-footer font-small bg-dark darken-3">
-				<!/-- <div class="container">
-					<div class="row">
-						<div class="col-md-12 py-2">
-							<div class="mb-5 flex-center mx-auto">
+		<!-- Modals -->
+		<div class="modal fade" id="modalPayment" tabindex="-2" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Kiadás feljegyzése</h5>
 
-							</div>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+					</div>
+
+					<div class="modal-body">
+						<div class="md-form mt-1">
+							<input type="text" class="form-control" name="value" id="value">
+							<label for="value">Összeg</label>
+						</div>
+
+						<div class="md-form">
+							<input type="text" class="form-control" name="desc" id="desc">
+							<label for="desc">Rövid leírás</label>
 						</div>
 					</div>
-				</div> --/>
-
-				<div class="footer-copyright text-center py-3">
-					© 2018 Copyright: <a href="https://github.com/yungbones"> Lovász Bence</a>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary btn-sm btn-addpayment">Rögzítés</button>
+						<button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Bezár</button>
+					</div>
 				</div>
-			</footer> -->
-		<?php } ?>
+			</div>
+		</div>
+
+		<?php $mysqli->close(); ?>
 
 		<!-- Script Section -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

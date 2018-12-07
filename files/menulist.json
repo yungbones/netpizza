@@ -1,4 +1,11 @@
-[ 
-    ["Pizza Kalifornia", 1450, "(tejfölös alap, füstölt tarja, sonka, kaliforniai paprika, sajtkrém, sajt)", 1190],
-    ["Pizza Picante", 1390, "(mustáros tejfölös alap, csemege szalámi, főtt tojás, füstölt sajt, sajt, csemege uborka)"]
+[
+	["Pizza Salami", 1150, "(paradicsomos alap, szalámi, sajt)"],
+    ["Pizza Kalifornia", 1450, "(tejfölös alap, füstölt tarja, sonka, kaliforniai paprika, sajtkrém, sajt)"],
+    ["Pizza Picante", 1390, "(mustáros tejfölös alap, csemege szalámi, főtt tojás, füstölt sajt, sajt, csemege uborka)"],
+    ["Pizza Castellomore", 1250, "(tejfölös alap, csemege szalámi, kukorica, lilahagyma, sajt)"],
+    ["Pizza Prosciutto e cotto", 1120, "(paradicsomos alap, sonka, sajt)"],
+    ["Pizza Bismark", 1190, "(paradicsomos alap, sonka, főtt tojás, sajt)"],
+    ["Pizza Parma", 1320, "(paradicsomos alap, füstölt tarja, hagyma, sajt, füstölt sajt)"],
+    ["Pizza Chichago", 1350, "(paradicsomos alap, sonka, paprikás kolbász, lilahagyma, sajt, habart tojás)"],
+    ["Pizza Bolognai", 1450, "(bolognai mártás, füstölt tarja, hagyma, főtt tojás, füstölt sajt, sajt, bacon szalonna, erős paprika)"]
 ]

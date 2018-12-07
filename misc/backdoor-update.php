@@ -2,19 +2,34 @@
     require_once "connection.php3";
 
     if ($_POST) {
-        $id = $_POST["id"];
-        $status = $_POST["newvalue"];
+        //echo var_dump($_POST);
+
+        $function = $_POST["func"];
 
         try {
-            if ($status >= 2)
-                $queryHandler = "UPDATE orders SET status=" . $status . ", finished=NOW() WHERE id=" . $id;
-            else
-                $queryHandler = "UPDATE orders SET status=" . $status . " WHERE id=" . $id;
+            if ($function == "update") {
+                $id = $_POST["id"];
+                $status = $_POST["newvalue"];
 
-            if ($result = $mysqli->query($queryHandler))
-                echo "updated";
-            else
-                echo "failed";
+                if ($status >= 2)
+                    $queryHandler = "UPDATE orders SET status=" . $status . ", finished=NOW() WHERE id=" . $id;
+                else
+                    $queryHandler = "UPDATE orders SET status=" . $status . " WHERE id=" . $id;
+
+                if ($result = $mysqli->query($queryHandler))
+                    echo "updated";
+                else
+                    echo "failed";
+            }
+            elseif ($function == "insert_p") {
+                $value = $_POST["value"];
+                $desc = $_POST["desc"];
+
+                if ($result = $mysqli->query("INSERT INTO payments SET value=" . intval($value) . ", description='" . $desc . "', time=NOW()"))
+                    echo "success";
+                else
+                    echo "error";
+            }
         }
         catch (PDOException $e) {
             echo $e->getMessage();

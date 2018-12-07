@@ -51,6 +51,9 @@
 	</head>
 
 	<body class="bg-light">
+		<?php 
+			require "misc/util.php3";
+		?>
 		<!-- Navbar -->
 		<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar">
 			<div class="container">
@@ -115,8 +118,8 @@
 					<h3>Információk</h3>
 
 					<ul class="pl-0" style="list-style: none;">
-						<li><strong>Üzletünk jelenleg <?php echo (date("H") >= 10 && date("H") < 22) ? "<font class='text-success'>nyitva" : "<font class='text-danger'>zárva"; ?></font> van</strong></li>
-						<li class="pt-3">Nyitvatartás: <b>11:00 - 22:00</b></li>
+						<li><strong>Üzletünk jelenleg <?php echo getShopStatus() ? "<font class='text-success'>nyitva" : "<font class='text-danger'>zárva"; ?></font> van</strong></li>
+						<li class="pt-3">Nyitvatartás: <b>10:00 - 22:00</b></li>
 						<li class="pt-3">Kiszállítás: <b>Paks</b> és 10km-es körzetében <b>ingyenes</b> kiszállítás, ezen felül <b>semmilyen</b> térítés ellenében nem áll módunkban kiszállítani.</li>
 						<li class="pt-3">Kapcsolat felvétel: <b>+36 30 123 4567</b></li>
 

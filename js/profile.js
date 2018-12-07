@@ -29,7 +29,6 @@ $(document).ready(function() {
     			url: "misc/change.php",
     			data: {
     				type: "password",
-    				id: $(this).data("id"),
     				current: current,
     				new: new1
     			},
@@ -57,7 +56,6 @@ $(document).ready(function() {
             url: "misc/change.php",
             data: {
                 type: "address",
-                id: $(this).data("id"),
                 new: new1
             },
 
@@ -128,13 +126,13 @@ function submitForm() {
 }
 
 function submitRegister() {
-	if ($("#name").val().length <= 3)
+	if ($("#reg-name").val().length <= 3)
 		$.notify("Név legalább 3 karakter kell legyen", "error");
-	else if ($("#phone").val().length != 11 || isNaN($("#phone").val()))
+	else if ($("#reg-phone").val().length != 11 || isNaN($("#reg-phone").val()))
 		$.notify("Hibás telefonszám", "error");
-	else if ($("#password").val().length < 8)
+	else if ($("#reg-password").val().length < 8)
 		$.notify("Jelszó legalább 8 karakter kell legyen", "error");
-	else if ($("#password").val() != $("#password2").val())
+	else if ($("#reg-password").val() != $("#reg-password2").val())
 		$.notify("A két Jelszó nem egyezik", "error");
     else {
 	    var data = $("#register-form").serialize();

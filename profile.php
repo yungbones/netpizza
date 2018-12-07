@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="hu-HU">
 	<head>
@@ -55,7 +57,7 @@
 			require "misc/connection.php3";
 			require "misc/util.php3";
 
-			$datas = json_decode($_COOKIE["json_userdata"], true);
+			$datas = $_SESSION["userdatas"];
 		?>
 
 		<!-- Navbar -->
@@ -103,7 +105,7 @@
 
 		<div class="container-fluid mx-auto pt-5 mb-5">
 			<!-- Login / Register Card -->
-			<?php if (!isset($_COOKIE["json_userdata"])) { ?>
+			<?php if (!isset($_SESSION["userdatas"])) { ?>
 				<div class="col-md-5 mx-auto">
 					<form id="login-form">
 						<div class="card">
@@ -143,31 +145,33 @@
 
 							<div class="card-body px-lg-5 pt-0">
 								<div class="md-form mt-4">
-									<input type="text" class="form-control" name="name" id="name">
-									<label for="name">Név</label>
+									<input type="text" class="form-control" name="reg-name" id="reg-name">
+									<label for="reg-name">Név</label>
 								</div>
 
 								<div class="md-form">
-									<input type="text" class="form-control" name="phone" id="phone">
-									<label for="phone">Telefonszám</label>
+									<input type="text" class="form-control" name="reg-phone" id="reg-phone">
+									<label for="reg-phone">Telefonszám</label>
 								</div>
 
 								<div class="md-form">
-									<input type="text" class="form-control" name="address" id="address">
-									<label for="address">Lakcím</label>
+									<input type="text" class="form-control" name="reg-address" id="reg-address">
+									<label for="reg-address">Lakcím</label>
 								</div>
 
 								<div class="md-form">
-									<input type="password" class="form-control" name="password" id="password">
-									<label for="password">Jelszó</label>
+									<input type="password" class="form-control" name="reg-password" id="reg-password">
+									<label for="reg-password">Jelszó</label>
 								</div>
 
 								<div class="md-form">
-									<input type="password" class="form-control" name="password2" id="password2">
-									<label for="password">Jelszó újra</label>
+									<input type="password" class="form-control" name="reg-password2" id="reg-password2">
+									<label for="reg-password2">Jelszó újra</label>
 								</div>
 
-								<button type="submit" data-badge="bottomleft" data-sitekey="6LcebnoUAAAAAKQyfd1j6faxAh4FcfOlrW2FDPml" data-callback="submitRegister" class="g-recaptcha btn-register btn btn-primary btn-block waves-effect mb-2 mt-5">Regisztráció</button>
+								<!-- <button type="submit" data-badge="bottomleft" data-sitekey="6LcebnoUAAAAAKQyfd1j6faxAh4FcfOlrW2FDPml" data-callback="submitRegister" class="g-recaptcha btn-register btn btn-primary btn-block waves-effect mb-2 mt-5">Regisztráció</button> -->
+								
+								<button type="submit" class="btn-register btn btn-primary btn-block waves-effect mb-2 mt-5">Regisztráció</button>
 
 								<a class="btn btn-success btn-block btn-sm waves-effect mb-4" onclick="changeTo('login');">Van már felhasználóm</a>
 							</div>
@@ -177,7 +181,7 @@
 			<?php } ?>
 
 			<!-- Profil -->
-			<?php if (isset($_COOKIE["json_userdata"])) { ?>
+			<?php if (isset($_SESSION["userdatas"])) { ?>
 				<div class="col-xl-10 mx-auto">
 					<div class="row">
 						<div class="col-xl-4 mb-5">
@@ -192,24 +196,24 @@
 
 								if ($result = $mysqli->query("SELECT COUNT(*) as counted FROM orders WHERE userid=" . $datas["id"]))
 									while ($rows = $result->fetch_assoc())
-										echo $rows["counted"] > 0 ? "<div class='row d-block text-center'><p>Eddigi rendeléseim <span class='badge badge-pill primary-color'>" . $rows["counted"] . "</span></p></div>" : "<div class='row d-block text-center'><p>Nem volt még rögzített rendelésed</p></div>";
+										echo $rows["counted"] > 0 ? "<div class='row d-block text-center'><p>Eddigi rendelések <span class='badge badge-pill primary-color'>" . $rows["counted"] . "</span></p></div>" : "<div class='row d-block text-center'><p>Nem volt még rögzített rendelésed</p></div>";
 							?>
 
-							<hr class="col-md-10 mt-4">
+							<!-- <hr class="col-md-10 mt-4"> -->
 
-							<div class="row col-md-10 mx-auto">
+							<div class="row col-md-10 mx-auto border-top border-primary pt-4">
 								<ul class="pl-0" style="list-style: none;">
 									<li id="myaddress">
 										<i class="fas fa-map-marker-alt text-primary pr-3"></i> <?php echo $datas["datas"]["address"]; ?>
 									</li>
 
 									<li class="mt-2">
-										<i class="fas fa-phone text-primary pr-3"></i> <?php echo phone_number_format($datas["datas"]["phone"]); ?>
+										<i class="fas fa-phone text-primary pr-3"></i> <?php echo formatPhoneNumber($datas["datas"]["phone"]); ?>
 									</li>
 								</ul>	
 							</div>
 
-							<div class="row col-md-10 mx-auto">
+							<div class="row col-md-10 mx-auto p-0">
 								<button class="btn btn-outline-primary btn-sm btn-block waves-effect" data-toggle="modal" data-target="#modalPassword">Jelszó módosítása</button>
 								<button class="btn btn-outline-primary btn-sm btn-block waves-effect mt-2" data-toggle="modal" data-target="#modalAddress">Lakcím módosítása</button>
 
@@ -278,7 +282,7 @@
 					</div>
 					
 					<div class="modal-footer">
-						<?php echo '<button type="button" class="btn-changepassword btn btn-primary btn-sm" data-id="' . $datas["id"] . '">Módosítások mentése</button>'; ?>
+						<button type="button" class="btn-changepassword btn btn-primary btn-sm">Módosítások mentése</button>
 						<button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Bezár</button>
 					</div>
 				</div>
@@ -302,12 +306,14 @@
 					</div>
 					
 					<div class="modal-footer">
-						<?php echo '<button type="button" class="btn-changeaddress btn btn-primary btn-sm" data-id="' . $datas["id"] . '">Módosítások mentése</button>'; ?>
+						<button type="button" class="btn-changeaddress btn btn-primary btn-sm">Módosítások mentése</button>
 						<button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal">Bezár</button>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<?php $mysqli->close(); ?>
 
 		<!-- Script Section -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

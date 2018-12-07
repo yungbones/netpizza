@@ -1,9 +1,9 @@
 $(document).ready(function() {
-    $("#registerbtn").click(function() {
+    $("#registerbtn").click(function() {        
     	if ($("#name").val().length <= 3)
     		$.notify("Név legalább 3 karakter kell legyen", "error");
-    	else if ($("#phone").val().length != 11 || isNaN($("#phone").val()))
-    		$.notify("Hibás telefonszám", "error");
+    	else if ($("#phone").val().length != 11)
+    		$.notify("Hibás telefonszám asd", "error");
     	else if ($("#password").val().length < 8)
     		$.notify("Jelszó legalább 8 karakter kell legyen", "error");
     	else if ($("#password").val() != $("#password-confirmation").val())
