@@ -29,6 +29,10 @@
     </head>
 
 	<body class="bg-dark">
-		<a href="/"><button class="center btn btn-outline-primary"><i class="fa fa-angle-double-left"></i> Vissza a főoldalra</button></a>
+		<div class="center">
+			<h3 class="text-light text-center">Az oldal amit keresel nem található</h3>
+
+			<a href="/"><button class="btn btn-outline-primary btn-block"><i class="fa fa-angle-double-left"></i> Vissza a főoldalra</button></a>
+		</div>
 	</body>
 </html>
