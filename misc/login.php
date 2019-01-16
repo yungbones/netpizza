@@ -2,7 +2,7 @@
 	session_start();
 
     require_once "connection.php3";
-    require_once "password.php3";
+    require_once "util.php3";
 
     if ($_POST) {
         //echo var_dump($_POST);

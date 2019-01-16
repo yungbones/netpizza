@@ -1,7 +1,62 @@
 $(document).ready(function() {
 	$("[data-toggle='tooltip']").tooltip();
 
-	$(".btn").click(function() {
+	setInterval(function() {
+		/* $("#accordion").load("../misc/backdoor-load.php");
+
+		//console.log($(".counter").html().trim() + " - " + $(".card").length);
+
+		if ($(".counter").html().trim() < $(".card").length) {
+			$(".counter").html($(".card").length);
+			$.notify("Új rendelés érkezett", "warning");
+		} */
+
+		//console.log($(".card-header")[0].getAttribute("data-target").replace("#collapse-", ""));
+
+		/*
+		echo '<div class="card bg-light mb-3">
+			<div class="card-header" id="order-' . $rows["oid"] . '" data-toggle="collapse" data-target="#collapse-' . $rows["oid"] . '">
+				<h5 class="mb-0"><b>' . ($rows["ostatus"] < 2 ? "#" . $rows["oid"] : $icon) . '</b> - Rögzített rendelés <b>' . $rows["aname"] . '</b> névre <b>(' . $rows["aadress"] . ')</b></h5>
+
+				' . ($rows["ostatus"] < 2 ? "<a class=\"font-small\"><i class=\"fa fa-clock\"></i> " . $rows["otime"] . "</a>" : "") . '
+			</div>
+
+			<div id="collapse-' . $rows["oid"] . '" class="collapse">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-6">' . $text . '</div>
+
+						<div class="col-md-6">' . $button . '</div>
+					</div>
+				</div>
+			</div>
+		</div>';
+		*/
+
+		//console.log($(".card-header").length);
+
+		$.ajax({
+			type: "POST",
+			url: "misc/backdoor-load.php",
+			//dataType: "json",
+			data: {id: $(".card-header")[0] ? $(".card-header")[0].getAttribute("data-target").replace("#collapse-", "") : 0},
+
+			success: function(data) {
+				//console.log(data);
+
+				if (data && data != "fail") {
+					$.notify("Új rendelés érkezett", "warning");
+
+					$("#accordion").prepend(data);
+					$(".counter").html($(".card").length);
+				}
+			}
+		});
+	}, 1000);
+
+	$("#accordion").on("click", ".btn", function() {
+		//alert($(this).attr("class").split(' '));
+
 		if ($(this).hasClass("start-btn")) {
 			var btn = $(this);
 			var sended = $.parseJSON('{"func": "update", "id": ' + btn.data("holder") + ', "newvalue": 1}');
@@ -36,6 +91,9 @@ $(document).ready(function() {
 	                else if (data == "updated") {
 	                	btn.replaceWith("<button data-holder='" + sended["id"] + "' class='btn btn-sm btn-dark' disabled><i class='fas fa-check-circle'></i> Rendelés teljesítve</button>");
 	                	$("#remove-" + sended["id"]).remove();
+
+	                	var datas = $("#order-" + sended["id"] + " b");
+	                	$("#order-" + sended["id"]).html("<h5 class='mb-0'><i class='far fa-check-circle text-success'></i></b> - Rögzített rendelés <b>" + datas[1].innerHTML + "</b> névre <b>" + datas[2].innerHTML + "</b></h5>");
 	                }
 		        }
 	      	});
@@ -62,6 +120,9 @@ $(document).ready(function() {
 						$("#br-" + sended["id"]).remove();
 
 						btn.replaceWith("<button data-holder='" + sended["id"] + "' class='btn btn-sm btn-dark' disabled><i class='fas fa-exclamation-circle'></i> Rendelés törölve</button>");
+						
+						var datas = $("#order-" + sended["id"] + " b");
+						$("#order-" + sended["id"]).html("<h5 class='mb-0'><i class='far fa-times-circle text-danger'></i></b> - Rögzített rendelés <b>" + datas[1].innerHTML + "</b> névre <b>" + datas[2].innerHTML + "</b></h5>");
 					}
 				}
 			});
@@ -92,7 +153,7 @@ $(document).ready(function() {
 
 			return false;
 		}
-		else if ($(this).data("holder") == "asd") {
+		else if ($(this).data("holder") == "print") {
 			
 		}
 	});
@@ -147,18 +208,4 @@ $(document).ready(function() {
 			return false;
 		}
 	});
-
-	/* loadOrders();
-	setInterval(loadOrders, 1000);
-
-	function loadOrders() {
-		$("#accordion").load("../misc/backdoor-load.php");
-
-		//console.log($(".counter").html().trim() + " - " + $(".card").length);
-
-		if ($(".counter").html().trim() < $(".card").length) {
-			$(".counter").html($(".card").length);
-			$.notify("Új rendelés érkezett", "warning");
-		}
-	} */
 });

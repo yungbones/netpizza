@@ -1,68 +1,22 @@
+<?php
+	require "misc/connection.php3";
+	require "misc/util.php3";
+?>
+
 <!DOCTYPE html>
 <html lang="hu-HU">
 	<head>
-		<title>Backdoor - NetPizza</title>
-
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-
-		<meta name="theme-color" content="#1d1e1e">
-		<meta name="author" content="Lovász Bence">
-
-		<link rel="icon" type="image/x-icon" href="images/favicon.png">
-		<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
-
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.13/css/mdb.min.css">
-		<link rel="stylesheet" href="plugins/notify/notify.css">
-
-		<link rel="stylesheet" href="css/maintenance.css">
-		<link rel="stylesheet" href="css/backdoor.css">
-
-		<!-- Cookies (eu law) -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
-		<script>
-			window.addEventListener("load", function() {
-				window.cookieconsent.initialise({
-					"palette": {
-						"popup": {
-							"background": "#000000"
-						},
-						
-						"button": {
-							"background": "#4285f4"
-						}
-					},
-					
-					"content": {
-						"message": "Jobb felhasználói élmény eléréséhez oldalunk sütiket használ!",
-						"dismiss": "Rendben",
-						"link": "Bővebben"
-					}
-				})
-			});
-		</script>
-
-		<!-- recaptcha for login -->
-		<script src="https://www.google.com/recaptcha/api.js?hl=hu" async defer></script>
+		<?php loadHeader("backdoor"); ?>
 	</head>
 
 	<body class="bg-light">
-		<?php
-			require "misc/connection.php3";
-			require "misc/util.php3";
-		?>
-
 		<?php if (!isset($_COOKIE["admin_user"])) { ?>
 			<div class="col-md-5 logindiv">
 				<form>
 					<div class="mx-auto text-center mb-4">
 					    <h3>Bejelentkezés</h3>
 
-					    <p>Backdoor megtekintéséhez add meg a dolgozói jelszót</p>
+					    <p>A <b>backdoor</b> megtekintéséhez add meg a dolgozói jelszót</p>
 
 					    <div class="md-form mt-1">
 							<input type="password" class="form-control" name="password" id="password">
@@ -95,11 +49,11 @@
 						<!-- Right -->
 						<ul class="navbar-nav nav-flex-icons">
 							<li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="bence444">
-								<a href="https://facebook.com/bence444" class="nav-link"><i class="fab fa-facebook text-primary"></i></a>
+								<a href="https://facebook.com/bence444" target="_blank" class="nav-link"><i class="fab fa-facebook text-primary"></i></a>
 							</li>
 		
 							<li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="yung_bones__">
-								<a href="https://instagram.com/yung_bones__" class="nav-link"><i class="fab fa-instagram"></i></a>
+								<a href="https://instagram.com/yung_bones__" target="_blank" class="nav-link"><i class="fab fa-instagram"></i></a>
 							</li>
 
 							<li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="lovasz.666">
@@ -128,7 +82,7 @@
 								Kiadás feljegyzése <i class="fas fa-money-bill-wave"></i>
 							</li>
 
-							<li data-holder="orderprint" class="bg-light list-group-item d-flex justify-content-between align-items-center">
+							<li data-holder="print" class="bg-light list-group-item d-flex justify-content-between align-items-center">
 								Napi összesítés nyomtatása <i class="fas fa-print"></i>
 							</li>
 
@@ -138,12 +92,13 @@
 						</ul>
 					</div>
 
-					<div class="col-xl-8 ml-0" id="orders">
+					<div class="col-xl-8 ml-0">
 						<div id="accordion" class="mb-5">
 							<?php
 								if ($result = $mysqli->query("SELECT orders.id as oid, orders.orderdatas as oorderdatas, orders.price as oprice, orders.userid as ouid, orders.status as ostatus, orders.time as otime, accounts.name as aname, accounts.phone as aphone, accounts.address as aadress FROM orders LEFT JOIN accounts ON accounts.id=orders.userid WHERE date=" . date("Ymd") . " ORDER BY orders.id DESC")) {
 									$texts = array("30 cm", "50 cm");
 									$colors = array("bg-warning", "bg-danger");
+									$icons = array("far fa-check-circle text-success", "far fa-times-circle text-danger");
 
 									while ($rows = $result->fetch_assoc()) {
 										$text = "";
@@ -162,14 +117,17 @@
 											$button = "<button data-holder='" . $rows["oid"] . "' class='btn btn-sm btn-dark' disabled><i class='fas fa-exclamation-circle'></i> Rendelés törölve</button>";
 
 										//if order not completed add delete button
+										$icon = "";
 										if ($rows["ostatus"] < 2)
 											$button = $button . '<br id="br-' . $rows["oid"] . '"><button id="remove-' . $rows["oid"] . '" data-holder="' . $rows["oid"] . '" class="btn btn-sm btn-danger delete-btn mt-2"><i class="fas fa-times"></i> Sztornó</button>';
+										else
+											$icon = '<i class="' . $icons[$rows["ostatus"] - 2] . '"></i>';
 
 										echo '<div class="card bg-light mb-3">
-											<div class="card-header" data-toggle="collapse" data-target="#collapse-' . $rows["oid"] . '">
-												<h5 class="mb-0"><b>#' . $rows["oid"] . '</b> - Rögzített rendelés <b>' . $rows["aname"] . '</b> névre <b>(' . $rows["aadress"] . ')</b></h5>
+											<div class="card-header" id="order-' . $rows["oid"] . '" data-toggle="collapse" data-target="#collapse-' . $rows["oid"] . '">
+												<h5 class="mb-0"><b>' . ($rows["ostatus"] < 2 ? "#" . $rows["oid"] : $icon) . '</b> - Rögzített rendelés <b>' . $rows["aname"] . '</b> névre <b>(' . $rows["aadress"] . ')</b></h5>
 
-												<a class="font-small"><i class="fa fa-clock"></i> ' . $rows["otime"] . '</a>
+												' . ($rows["ostatus"] < 2 ? "<a class=\"font-small\"><i class=\"fa fa-clock\"></i> " . $rows["otime"] . "</a>" : "") . '
 											</div>
 
 											<div id="collapse-' . $rows["oid"] . '" class="collapse">

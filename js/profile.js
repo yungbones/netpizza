@@ -20,7 +20,7 @@ $(document).ready(function() {
     	var new2 = $("#password-new2").val();
 
     	if (new1.length < 8)
-    		$.notify("Jelszó legalább 8 karakter kell legyen", "error");
+    		$.notify("A jelszó legalább 8 karakter kell legyen", "error");
     	else if (new1 != new2)
     		$.notify("A két jelszó nem egyezik", "error");
     	else {
@@ -143,7 +143,11 @@ function submitRegister() {
 	        data: data,
 
 	        success: function(data) {
-	            if (data == "phone")
+                console.log(data);
+                
+                if (data == "captcha")
+                    $.notify("Az azonosítás nem sikerült (captcha error)", "warning");
+	            else if (data == "phone")
 	            	$.notify("A telefonszám már regisztrálva van.", "error");
 	            else if (data == "fail")
 	                $.notify("Hiba történt. Nézz vissza később!", "error");
@@ -174,10 +178,6 @@ function changeTo(state) {
 function footerFix() {
     $(".page-footer").removeClass("fixed-bottom");
 
-    var screenH = $(window).height();
-    var footerH = $(".page-footer").height();
-    var footerY = $(".page-footer").position().top;
-
-    if (footerY < screenH - footerH)
+    if ($(".page-footer").position().top < $(window).height() - $(".page-footer").height())
         $(".page-footer").addClass("fixed-bottom");
 }

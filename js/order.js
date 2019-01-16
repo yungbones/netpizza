@@ -65,19 +65,20 @@ $(document).ready(function() {
 
 	$(".completeorder").click(function() {
 		if (!$.isEmptyObject(myOrder)) {
+			$(".clearorders").addClass("disabled");
+			$(this).addClass("disabled");
+
 			$(".fullscreen").css("display", "block");
 
 			var sended = {};
 
 			for (var i = 0; i < myOrder.length; i++)
 				sended[i] = $.parseJSON('{"name": "' + myOrder[i]["name"] + '", "type": ' + myOrder[i]["type"] + ', "price": ' + myOrder[i]["price"] + ', "count": ' + myOrder[i]["count"] + '}');
-
-			var id = 12; //session user id
 			
 			$.ajax({
 	            type: "POST",
 	            url: "misc/order.php",
-	            data: {sended},
+	            data: sended,
 
 	            success: function(data) {
 	                if (data == "success") {
@@ -92,9 +93,16 @@ $(document).ready(function() {
 	                	$(".fullscreen").css("display", "none");
 	                }
 	                else if (data == "fail") {
-	                	$.notify("Hiba a feldolgozás során", "error");
-
 	                	$(".fullscreen").css("display", "none");
+
+	                	$.notify({
+	                        message: "Előbb jelentkezz be",
+	                        status: "error",
+	                        timeout: 2000,
+	                        onClose: function() {
+	                            location.reload()
+	                        }
+	                    });
 	                }
 		        }
 	      	});
@@ -110,17 +118,13 @@ $(document).ready(function() {
 	})
 });
 
-const numberFormat = (x) => {
+function numberFormat(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function footerFix() {
     $(".page-footer").removeClass("fixed-bottom");
 
-    var screenH = $(window).height();
-    var footerH = $(".page-footer").height();
-    var footerY = $(".page-footer").position().top;
-
-    if (footerY < screenH - footerH)
+    if ($(".page-footer").position().top < $(window).height() - $(".page-footer").height())
         $(".page-footer").addClass("fixed-bottom");
 }
